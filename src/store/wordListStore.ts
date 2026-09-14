@@ -1,8 +1,9 @@
 import { defineStore } from "pinia";
 import type { Word } from "../lib/types";
+import { loadWords, saveWords } from "../lib/wordStorage";
 
 export const useWordListStore = defineStore("wordListStore", {
-  state: () => ({ words: [] as Word[] }),
+  state: () => ({ words: loadWords() }),
   getters: {
     getWords: (state) => state.words,
   },
@@ -14,9 +15,11 @@ export const useWordListStore = defineStore("wordListStore", {
       } else {
         this.words.push(word);
       }
+      saveWords(this.words);
     },
     removeWord(id: string) {
       this.words = this.words.filter((word) => word.id !== id);
+      saveWords(this.words);
     },
   },
 });

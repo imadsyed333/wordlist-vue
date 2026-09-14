@@ -10,8 +10,9 @@ export default defineConfig({
     vue(),
     serwist({
       swSrc: "src/sw.ts",
-      swDest: "dist/sw.js",
+      swDest: "sw.js",
       globDirectory: "dist",
+      globPatterns: ["**/*.{js,css,html,svg,json,ico,webmanifest}"],
       injectionPoint: "self.__SW_MANIFEST",
       rollupFormat: "iife",
     }),

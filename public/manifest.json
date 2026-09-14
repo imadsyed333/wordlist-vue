@@ -1,5 +1,13 @@
 {
   "name": "WordList",
+  "short_name": "WordList",
+  "icons": [
+    {
+      "src": "/icons.svg",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
   "theme_color": "#FFFFFF",
   "background_color": "#FFFFFF",
   "start_url": "/",
