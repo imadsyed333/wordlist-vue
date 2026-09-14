@@ -10,10 +10,11 @@ export const useWordFormStore = defineStore("wordFormStore", {
       type: "",
       definition: "",
     } as Word,
+    isOpen: false,
   }),
   actions: {
     setForm(word: Word) {
-      this.word = word;
+      this.word = { ...word };
     },
     resetForm() {
       this.word = {
@@ -22,6 +23,12 @@ export const useWordFormStore = defineStore("wordFormStore", {
         type: "",
         definition: "",
       };
+    },
+    closeModal() {
+      this.isOpen = false;
+    },
+    openModal() {
+      this.isOpen = true;
     },
   },
 });

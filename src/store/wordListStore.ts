@@ -7,17 +7,16 @@ export const useWordListStore = defineStore("wordListStore", {
     getWords: (state) => state.words,
   },
   actions: {
-    addWord(word: Word) {
-      this.words.push(word);
-    },
-    removeWord(id: string) {
-      this.words = this.words.filter((word) => word.id !== id);
-    },
-    updateWord(word: Word) {
+    upsertWord(word: Word) {
       const existingWord = this.words.find((w) => w.id === word.id);
       if (existingWord) {
         Object.assign(existingWord, word);
+      } else {
+        this.words.push(word);
       }
+    },
+    removeWord(id: string) {
+      this.words = this.words.filter((word) => word.id !== id);
     },
   },
 });
