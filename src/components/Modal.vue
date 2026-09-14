@@ -1,18 +1,13 @@
 <script setup lang="ts">
-import { storeToRefs } from "pinia";
-import { useWordFormStore } from "../store/wordFormStore";
 import { ref, watch } from "vue";
 
-const wordFormStore = useWordFormStore();
-
-const { closeModal } = wordFormStore;
-
-const { isOpen } = storeToRefs(wordFormStore);
+const props = defineProps<{ open: boolean }>();
+const emit = defineEmits<{ close: [] }>();
 
 const modalRef = ref<HTMLDialogElement | null>(null);
 
 watch(
-  isOpen,
+  () => props.open,
   (open) => {
     if (open) modalRef.value?.showModal();
   },
@@ -25,7 +20,7 @@ const handleAfterLeave = () => {
 
 const handleDialogClick = (event: MouseEvent) => {
   if (event.target === modalRef.value) {
-    closeModal();
+    emit("close");
   }
 };
 </script>
@@ -46,7 +41,7 @@ const handleDialogClick = (event: MouseEvent) => {
         @after-leave="handleAfterLeave"
       >
         <div
-          v-if="isOpen"
+          v-if="open"
           class="mx-auto mt-auto w-full max-w-md rounded-t-3xl bg-white px-5 pt-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] dark:bg-zinc-900"
         >
           <header class="mb-4">

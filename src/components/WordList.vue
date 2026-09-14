@@ -1,16 +1,38 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import { storeToRefs } from "pinia";
+import type { Word } from "../lib/types";
 import { useWordListStore } from "../store/wordListStore";
 import WordCard from "./WordCard.vue";
+import Modal from "./Modal.vue";
 import { useWordFormStore } from "../store/wordFormStore.ts";
 
-const { getWords } = storeToRefs(useWordListStore());
+const wordListStore = useWordListStore();
+const { getWords } = storeToRefs(wordListStore);
+const { removeWord } = wordListStore;
 
 const { openModal, resetForm } = useWordFormStore();
+
+const confirmOpen = ref(false);
+const pendingDelete = ref<Word | null>(null);
 
 const handleAdd = () => {
   resetForm();
   openModal();
+};
+
+const requestDelete = (word: Word) => {
+  pendingDelete.value = word;
+  confirmOpen.value = true;
+};
+
+const closeConfirm = () => {
+  confirmOpen.value = false;
+};
+
+const confirmDelete = () => {
+  if (pendingDelete.value) removeWord(pendingDelete.value.id);
+  confirmOpen.value = false;
 };
 </script>
 
@@ -27,7 +49,12 @@ const handleAdd = () => {
     v-if="getWords.length > 0"
     class="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-4 py-4 pb-[calc(6rem+env(safe-area-inset-bottom))]"
   >
-    <WordCard v-for="word in getWords" :key="word.id" :word="word" />
+    <WordCard
+      v-for="word in getWords"
+      :key="word.id"
+      :word="word"
+      @delete="requestDelete(word)"
+    />
   </ul>
 
   <p
@@ -55,4 +82,33 @@ const handleAdd = () => {
       <path d="M12 5v14M5 12h14" />
     </svg>
   </button>
+
+  <Modal :open="confirmOpen" @close="closeConfirm">
+    <template #header>
+      <h2 class="text-xl font-semibold text-zinc-900 dark:text-zinc-50">
+        Delete word?
+      </h2>
+    </template>
+    <template #body>
+      <p class="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+        Delete “{{ pendingDelete?.name }}”? This cannot be undone.
+      </p>
+      <div class="mt-4 flex gap-3">
+        <button
+          type="button"
+          class="min-h-12 flex-1 rounded-xl border border-zinc-200 bg-white text-base font-semibold text-zinc-700 transition hover:bg-zinc-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-400 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
+          @click="closeConfirm"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="min-h-12 flex-1 rounded-xl bg-red-600 text-base font-semibold text-white transition hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+          @click="confirmDelete"
+        >
+          Delete
+        </button>
+      </div>
+    </template>
+  </Modal>
 </template>

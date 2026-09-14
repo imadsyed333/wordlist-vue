@@ -8,7 +8,7 @@ import Modal from "./Modal.vue";
 const wordListStore = useWordListStore();
 const wordFormStore = useWordFormStore();
 
-const { word } = storeToRefs(wordFormStore);
+const { word, isOpen } = storeToRefs(wordFormStore);
 
 const { upsertWord } = wordListStore;
 const { resetForm, closeModal } = wordFormStore;
@@ -33,7 +33,7 @@ const handleSubmit = () => {
 </script>
 
 <template>
-  <Modal>
+  <Modal :open="isOpen" @close="closeModal">
     <template v-slot:header>
       <h2 class="text-xl font-semibold text-zinc-900 dark:text-zinc-50">
         {{ isEdit ? "Edit Word" : "Add Word" }}

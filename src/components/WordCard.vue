@@ -1,17 +1,12 @@
 <script setup lang="ts">
 import type { Word } from "../lib/types";
 import { useWordFormStore } from "../store/wordFormStore";
-import { useWordListStore } from "../store/wordListStore";
 
 const props = defineProps<{ word: Word }>();
 
-const { removeWord } = useWordListStore();
+const emit = defineEmits<{ delete: [] }>();
 
 const { setForm, openModal } = useWordFormStore();
-
-const handleDelete = () => {
-  removeWord(props.word.id);
-};
 
 const handleEdit = () => {
   setForm(props.word);
@@ -60,7 +55,7 @@ const handleEdit = () => {
           type="button"
           class="flex size-11 items-center justify-center rounded-lg text-red-600 hover:bg-red-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 dark:text-red-400 dark:hover:bg-red-950"
           aria-label="Delete"
-          @click="handleDelete"
+          @click="emit('delete')"
         >
           <svg
             class="size-5"
